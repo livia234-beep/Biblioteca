@@ -1,20 +1,19 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import *
 from django.views import View
 
-
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'index.html')
+        livros = Livro.objects.all()
+        return render(request, 'index.html', {'livros': livros})
 
 
 class LivrosView(View):
     def get(self, request, *args, **kwargs):
         livros = Livro.objects.all()
         return render(request, 'livros.html', {'livros': livros})
-
-
-# def post(self, request, *args, **kwargs):
 
 
 class EmprestimoView(View):
@@ -51,11 +50,11 @@ class GenerosView(View):
     def get(self, request, *args, **kwargs):
         generos = Genero.objects.all()
         return render(request, 'genero.html', {'generos': generos})
-    
+
+
 class DeleteLivroView(View):
     def get(self, request, id, *args, **kwargs):
-         livro = Livro.objects.get(id=id)
-         livro.delete()
-         messages.success(request,'Livro excluído com sucesso!') # Success messag 
-         return redirect('livros')
-    
+        livro = get_object_or_404(Livro, id=id)
+        livro.delete()
+        messages.success(request, 'Livro excluído com sucesso!')
+        return redirect('livros')
